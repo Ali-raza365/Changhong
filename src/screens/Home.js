@@ -1,213 +1,236 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  FlatList,
-  Image,
+    SafeAreaView,
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    StatusBar,
+    FlatList,
+    Image,
+    TouchableOpacity,
+    RefreshControl
+
 } from 'react-native';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconMaterialC from 'react-native-vector-icons/MaterialCommunityIcons';
-import Fonts from "../assets/fonts";
-import { connect } from 'react-redux';
+import Fonts from '../assets/fonts';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import {
+    COLOR,
+    IMAGE,
+    TEXT_SIZES,
+    MOBILE_WIDTH,
+    SPACING_PERCENT,
+    WP,
+    HP,
+    APP_NAME,
+    RADIUS,
+    TAB_ICON_SIZE,
+    FONT_SIZES,
+} from '../common/Config';
+import { AllVoucher } from '../store/actions/Voucher';
+import LoadingComponent from '../components/LoadingComponent';
+import { chechPermissionStatus } from '../utils/PermissionsManager';
 
-const imgMap = require('../assets/images/map.png');
 
 const Home = (props) => {
-  const { theme } = props
+    const { theme, navigation } = props;
+    const [refreshing, setRefreshing] = useState(false);
 
-  return (
-    <>
-      <FlatList
-        data={[1, 2, 4, 5, 6]}
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingVertical: 15,
-        }}
-        keyExtractor={(item, index) => 'home-item' + index.toString()}
-        ItemSeparatorComponent={() => {
-          return (
-            <View
-              style={{
-                height: 15,
-                backgroundColor: '#00000000',
-              }}
-            />
-          );
-        }}
-        renderItem={({item, index}) => {
-          return (
-            <View
-              style={{
-                borderRadius: 5,
-                borderWidth: 1,
-                borderColor: theme.border,
-                marginHorizontal: 15,
-                backgroundColor: theme.card
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginHorizontal: 15,
-                  marginTop: 10,
-                }}>
-                <Image
-                  source={{
-                    uri: 'https://randomuser.me/api/portraits/women/90.jpg',
-                  }}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 30,
-                  }}
-                  resizeMode="contain"
-                />
-                <Text
-                  style={{
-                    marginLeft: 15,
-                    color: theme.text,
-                    fontFamily: Fonts.Regular
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.Bold
-                    }}>
-                    Emily Deo
-                  </Text>{' '}
-                  is looking for Spaghetti
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 60,
-                  marginRight: 10,
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    height: 4,
-                    borderRadius: 4,
-                    backgroundColor: theme.border,
-                  }}>
-                  <View
-                    style={{
-                      width: '50%',
-                      height: 4,
-                      borderRadius: 4,
-                      backgroundColor: theme.purple,
+    const { all_vouchers_loading, vouchers } = useSelector(state => state.voucher)
+    const dispatch = useDispatch()
+    useEffect(() => {
+        // getallvouchers()
+        chechPermissionStatus()
+    }, [])
+
+    const getallvouchers = () => {
+        dispatch(AllVoucher())
+    }
+    const onRefresh = () => {
+        getallvouchers()
+    };
+
+    if (all_vouchers_loading) {
+        return <LoadingComponent />
+    }
+    return (
+        <>
+            <View style={{
+                flex: 1,
+                backgroundColor: COLOR.whiteColor,
+            }} >
+                <FlatList
+                    refreshControl={
+                        <RefreshControl
+                            //refresh control used for the Pull to Refresh
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                    data={vouchers}
+                    contentContainerStyle={{
+                        // flex: 1,
                     }}
-                  />
-                </View>
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    fontSize: 12,
-                    fontFamily: Fonts.Bold,
-                    color: theme.text
-                  }}>
-                  RISING STAR
-                </Text>
-              </View>
+                    keyExtractor={(item, index) => 'home-item' + index.toString()}
+                    ListFooterComponent={() => {
+                        return (
+                            <View style={{ marginBottom: WP(20), }}>
+                            </View>
+                        )
+                    }}
+                    ListHeaderComponent={() => {
+                        return (
+                            <>
+                                {/* <View style={{ overflow: 'hidden', width: "85%", marginLeft: "auto", marginRight: "auto" }}>
+                                    <Image source={IMAGE.logo} style={{ width: "100%", height: HP(13) }} resizeMode="contain" />
+                                </View> */}
+                                <View style={{ overflow: 'hidden', }}>
+                                    <Image source={IMAGE.earth} style={{}} />
+                                </View>
+                                {/* <Text
+                                    // onPress={() => {
+                                    //     navigation.navigate('Auth', {
+                                    //         screen: 'WelcomeScr',
+                                    //         params: { user: 'jane' },
+                                    //     });
+                                    // }}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        color: COLOR.primary,
+                                        fontSize: WP(4.5),
+                                        fontWeight: 'bold',
+                                        paddingVertical: WP(SPACING_PERCENT),
+                                        paddingHorizontal: WP(SPACING_PERCENT),
+                                    }}>
+                                    Changhong Outlet, DHA
+                                </Text> */}
+                                <Text
+                                    style={{
+                                        color: COLOR.primary,
+                                        fontSize: WP(4),
+                                        fontWeight: 'bold',
+                                        paddingTop: WP(2),
+                                        lineHeight: WP(6),
+                                        // paddingVertical: WP(SPACING_PERCENT),
+                                        paddingHorizontal: WP(SPACING_PERCENT),
+                                    }}>
+                                    Step # 1 Scan QR code. {"\n"}
 
-              <View
-                style={{
-                  backgroundColor: '#00000011',
-                  height: 1,
-                  marginVertical: 10,
-                }}
-              />
-
-              <Text
-                style={{
-                  color: theme.text,
-                  marginHorizontal: 15,
-                  fontFamily: Fonts.Regular
-                }}>
-                Who want to eat spaghetti with me?
-              </Text>
-
-              <Image
-                source={imgMap}
-                style={{
-                  width: '100%',
-                  height: 160,
-                  marginVertical: 10,
-                }}
-                resizeMode="cover"
-              />
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 5,
-                  marginBottom: 15,
-                  justifyContent: 'space-evenly',
-                }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <IconMaterialC name="heart-outline" size={14} color={theme.text} />
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      color: theme.text,
-                      fontSize: 12,
-                      fontFamily: Fonts.Regular
-                    }}>
-                    Like
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <IconFontAwesome name="comment-o" size={14} color={theme.text} />
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      color: theme.text,
-                      fontSize: 12,
-                      fontFamily: Fonts.Regular
-                    }}>
-                    Comment
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <IconMaterialC name="email-outline" size={14} color={theme.text} />
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      color: theme.text,
-                      fontSize: 12,
-                      fontFamily: Fonts.Regular
-                    }}>
-                    Message
-                  </Text>
-                </View>
-              </View>
+                                    Step # take & upload a picture
+                                </Text>
+                                <Text
+                                    style={{
+                                        color: COLOR.primary,
+                                        fontSize: WP(4.5),
+                                        fontWeight: 'bold',
+                                        paddingVertical: WP(SPACING_PERCENT),
+                                        paddingHorizontal: WP(SPACING_PERCENT),
+                                    }}>
+                                    Recently Submitted Vouchers
+                                </Text>
+                            </>
+                        );
+                    }}
+                    ListEmptyComponent={() => {
+                        return (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    height: WP('90%'),
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                <IconMaterialC
+                                    name="view-list-outline"
+                                    color={COLOR.primary}
+                                    size={WP(30)}
+                                    onPress={() => {
+                                        console.log('goBack');
+                                        navigation.goBack();
+                                    }}
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: WP(5),
+                                        fontWeight: 'bold',
+                                        color: COLOR.primary,
+                                        textAlign: 'center',
+                                    }}>
+                                    No record to show
+                                </Text>
+                            </View>
+                        );
+                    }}
+                    ItemSeparatorComponent={() => {
+                        return (
+                            <View
+                                style={{
+                                    height: 15,
+                                    backgroundColor: '#ffff',
+                                }}
+                            />
+                        );
+                    }}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <TouchableOpacity
+                                style={{
+                                    margin: WP(2.5),
+                                    // marginRight: WP(SPACING_PERCENT),
+                                    width: WP('95%'),
+                                    height: WP(30),
+                                    borderRadius: 10,
+                                    elevation: 15,
+                                    backgroundColor: COLOR.whiteColor,
+                                }}>
+                                <Text
+                                    style={{
+                                        color: COLOR.primary,
+                                        fontWeight: 'bold',
+                                        padding: WP(SPACING_PERCENT),
+                                        fontSize: WP(4.5),
+                                    }}>
+                                    {item.order_number}
+                                </Text>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    padding: WP(SPACING_PERCENT),
+                                    borderTopColor: COLOR.blackColor,
+                                    alignItems: 'center',
+                                    borderTopWidth: 1,
+                                    borderStyle: 'dashed',
+                                    borderRadius: 1,
+                                    justifyContent: "space-between",
+                                }}>
+                                    <View >
+                                        {/* <Text style={{ lineHeight: WP(SPACING_PERCENT), fontWeight: "600" }}>Incentive  </Text> */}
+                                        <Text style={{ lineHeight: WP(SPACING_PERCENT + 2), fontWeight: "600" }}>Created At:{new Date(item.created_at).toLocaleDateString()} </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ lineHeight: WP(SPACING_PERCENT + 2), fontWeight: "600" }}>RS {item.pay_amount}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    }}
+                />
             </View>
-          );
-        }}
-      />
-    </>
-  );
+        </>
+    );
 };
 
 const styles = StyleSheet.create({});
 
-const mapStateToProps = state => {
-  const { app } = state
+const mapStateToProps = (state) => {
+    const { app } = state;
 
-  return {
-    theme: app.theme
-  };
+    return {
+        theme: app.theme,
+    };
 };
 
-export default connect(
-  mapStateToProps,
-  {},
-)(Home);
-
+export default connect(mapStateToProps, {})(Home);

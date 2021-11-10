@@ -4,110 +4,134 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { enableScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
-import _ from 'lodash'
+import _ from 'lodash';
 
 import Login from '../screens/Login';
 import Chat from '../screens/Chat';
-import BottomTabs from './bottomTabs';
 import LoadingComponent from '../components/LoadingComponent';
 import preferences from '../common/preferences';
-import { setUser } from "../store/actions/userSession";
-import { setTheme, setLanguage } from "../store/actions/app";
-
-import * as ApiServices from '../services'
+import * as ApiServices from '../services';
 import PermissionsManager from '../utils/PermissionsManager';
+import AuthStack from './AuthStack';
+import BottomTabs from './bottomTabs';
+import DealerBottomTab from './DealerBottombar';
+import TrainerBottomTabs from './TrainerBottomTabs';
+import {
+    Animation,
+    Display,
+    E_Learning,
+    MRP,
+    MRPDetail,
+    Question,
+    Retail,
+    SaleReport,
+    Conformation,
+    StockDetails,
+    StockReport,
+    StockTotal,
+    Wallet,
+    SelectBrand,
+    Timer,
+    TrainingConfirmation,
+    Manually,
+    AddQuestion,
+    PhotoGallery,
+    ShowQuestion,
+    PersonalDetails,
+    TransactionHistory,
+    DisplayDetail,
+    SplashScreen,
+    ManuallyBarCode,
+    QrCamera,
+    Forgot,
+    BarCodeSuccess,
+} from '../screens';
 
 const Stack = createStackNavigator();
 enableScreens();
 
-const AuthStack = () => {
-  return (
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="Login" component={Login} />
-    </Stack.Navigator>
-  );
-};
-
 const RootNavigator = (props) => {
-  const { theme, user, setLanguage } = props
-  const [loading, setLoading] = useState(true)
+    const { theme, user, setLanguage } = props;
+    const [loading, setLoading] = useState(true);
 
-  async function onMount() {
-    PermissionsManager.chechPermissionStatus()
-    preferences.getLocalization().then(languageTag => {
-      setLanguage(languageTag)
-      ApiServices.ipService().then(response => {
-        if (response.country_code == 'EC') {
-          setLanguage('es')
-        }
-      })
-    }).catch(error => {
-      console.log('RootStack', 'getLocalization-error', error)
-    })
+    // async function onMount() {
+    //      PermissionsManager.chechPermissionStatus();
+    //      preferences
+    //           .getLocalization()
+    //           .then((languageTag) => {
+    //                setLanguage(languageTag);
+    //                ApiServices.ipService().then((response) => {
+    //                     if (response.country_code == 'EC') {
+    //                          setLanguage('es');
+    //                     }
+    //                });
+    //           })
+    //           .catch((error) => {
+    //                console.log('RootStack', 'getLocalization-error', error);
+    //           });
 
-    try {
-      setLoading(true)
+    //      try {
+    //           setLoading(true);
 
-      const savedSession = await preferences.getAuthSession()
-      const userSession = await ApiServices.verifySession()
-      // preferences.setAuthSession({
-      //   accessToken: userSession.session.jwt,
-      // })
-      props.setUser(userSession)
-    } catch (error) {
+    //           const savedSession = await preferences.getAuthSession();
+    //           const userSession = await ApiServices.verifySession();
+    //           // preferences.setAuthSession({
+    //           //   accessToken: userSession.session.jwt,
+    //           // })
+    //           props.setUser(userSession);
+    //      } catch (error) {
+    //      } finally {
+    //           setLoading(false);
+    //      }
+    // }
 
-    } finally {
-      setLoading(false)
-    }
-  }
+    // useEffect(() => {
+    //      // onMount()
+    // }, [])
+    return (
+        <NavigationContainer>
+            <Stack.Navigator headerMode="none" >
+                <Stack.Screen name="splash" component={SplashScreen} />
+                <Stack.Screen name="Auth" component={AuthStack} />
+                <Stack.Screen name="bottomTab" component={BottomTabs} />
+                <Stack.Screen name="DealerBottomTab" component={DealerBottomTab} />
+                <Stack.Screen name="BrCode" component={QrCamera} />
+                <Stack.Screen name="BarCodeSuccess" component={BarCodeSuccess} />
+                <Stack.Screen name="Manually" component={Manually} />
+                <Stack.Screen name="MyRetail" component={Retail} />
+                <Stack.Screen name="SaleReport" component={SaleReport} />
+                <Stack.Screen name="Wallet" component={Wallet} />
+                <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+                <Stack.Screen name="TransactionHistory" component={TransactionHistory} />
+                <Stack.Screen name="E_Learning" component={E_Learning} />
+                <Stack.Screen name="Question" component={Question} />
+                <Stack.Screen name="AddQuestion" component={AddQuestion} />
+                <Stack.Screen name="ShowQuestion" component={ShowQuestion} />
+                <Stack.Screen name="Display" component={Display} />
+                <Stack.Screen name="DisplayDetail" component={DisplayDetail} />
+                <Stack.Screen name="StockReport" component={StockReport} />
+                <Stack.Screen name="StockDetails" component={StockDetails} />
+                <Stack.Screen name="StockDetailsTotal" component={StockTotal} />
+                <Stack.Screen name="Conformation" component={Conformation} />
+                <Stack.Screen name="MRP" component={MRP} />
+                <Stack.Screen name="MRPDetail" component={MRPDetail} />
+                <Stack.Screen name="SelectBrand" component={SelectBrand} />
+                <Stack.Screen name="PhotoGallery" component={PhotoGallery} />
+                <Stack.Screen name="TrainerTabs" component={TrainerBottomTabs} />
+                <Stack.Screen name="Timer" component={Timer} />
+                <Stack.Screen
+                    name="TrainingConfirmation"
+                    component={TrainingConfirmation}
+                />
 
-  useEffect(() => {
-    onMount()
-  }, [])
-
-  return (
-    <NavigationContainer
-      theme={{
-        dark: theme.name === 'dark',
-        colors: {
-          primary: theme.primary,
-          background: theme.background,
-          text: theme.text,
-          card: theme.card,
-          border: theme.border,
-          notification: theme.notification,
-        }
-      }}
-    >
-      <Stack.Navigator headerMode="none" initialRouteName='Auth'>
-        {loading ? (
-          <Stack.Screen name="Loading" component={LoadingComponent} />
-        ) : _.isNil(user) ? (
-          <Stack.Screen name="Auth" component={AuthStack} />
-        ) : (
-              <>
-                <Stack.Screen name="Main" component={BottomTabs} />
-                <Stack.Screen name="Chat" component={Chat} />
-              </>
-            )}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+                {/* <Stack.Screen name="TrainerTabs" component={TrainerBottomTabs} /> */}
+                {/* <Stack.Screen name="Auth" component={AuthStack} /> */}
+                {/* <Stack.Screen name="MyRetail" component={Animation} /> */}
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 };
 
-const mapStateToProps = state => {
-  const { app, userSession } = state
 
-  return {
-    theme: app.theme,
-    user: userSession.user
-  };
-};
+export default RootNavigator
 
-export default connect(
-  mapStateToProps,
-  {
-    setUser,
-    setLanguage
-  },
-)(RootNavigator);

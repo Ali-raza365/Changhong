@@ -1,223 +1,221 @@
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  ActivityIndicator
+    SafeAreaView,
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    StatusBar,
+    TouchableOpacity,
+    Image,
+    ActivityIndicator,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Input from '../components/InputField';
-import Fonts from "../assets/fonts";
-import { connect } from 'react-redux';
-import { setUser } from "../store/actions/userSession";
-import * as AuthServices from '../services'
+import Fonts from '../assets/fonts';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../store/actions/userSession';
+import * as AuthServices from '../services';
 import preferences from '../common/preferences';
 import { translate } from '../language';
-import { setTheme, setLanguage } from "../store/actions/app";
+import {
+    COLOR,
+    IMAGE,
+    TEXT_SIZES,
+    MOBILE_WIDTH,
+    SPACING_PERCENT,
+    WP,
+    HP,
+    APP_NAME,
+    RADIUS,
+    TAB_ICON_SIZE,
+    FONT_SIZES,
+} from '../common/Config';
+import { _Login } from "../store/actions/userSession";
+import { isValidEmail } from "../utils/Validation";
+
+import HeaderComponent from '../components/HeaderComponent';
 
 const Login = (props) => {
-  const { navigation, theme, language, setLanguage} = props
+    const { navigation, } = props;
+    const { login_loading } = useSelector(state => state.userSession)
+    const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
-  const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState('pietroex')
-  const [password, setPassword] = useState('ciao')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
+    function validate() {
+        if (email.length == 0) {
+            setEmailError('Please enter email');
+            return false;
+        }
+        if (isValidEmail(email) === false) {
+            setEmailError('Please enter valid email');
+            return false;
+        }
+        if (password.length == 0) {
+            setPasswordError('Please enter password');
+            return false;
+        }
+        if (password.length < 6) {
+            setPasswordError('passward must be at least 6 characters');
+            return false;
+        }
 
-  function validate() {
-    if (email.length == 0) {
-      setEmailError('Please enter username')
-      return false
+        return true;
     }
-    if (email.length == 0) {
-      setPasswordError('Please enter password')
-      return false
+
+    function onLoginPress() {
+        setEmailError('');
+        setPasswordError('');
+        dispatch(_Login(email, password, navigation));
     }
 
-    return true
-  }
+    return (
+        <ScrollView style={styles.container}>
+            {/* headers */}
+            <HeaderComponent NoIcon={true} title="Sign In" navigation={navigation} />
+            {/* Logo  */}
+            <View style={{ overflow: 'hidden', width: "90%", marginLeft: "auto", marginRight: "auto" }}>
+                <Image source={IMAGE.Chiq_logo} style={{ width: "100%", height: HP(13) }} resizeMode="center" />
+            </View>
+            {/* Welcome Text  */}
+            <View style={{ margin: WP(SPACING_PERCENT) }}>
+                <Text style={{ fontSize: WP(7), fontWeight: 'bold' }}>Welcome</Text>
+                <Text style={{ fontSize: WP(5), color: '#969696' }}>
+                    Enter your phone number and email {'\n'}address to sign in...
+                </Text>
+            </View>
+            {/* inputs contaner */}
+            <View style={{ padding: WP(SPACING_PERCENT), paddingTop: 0 }}>
+                <Input
+                    InputIcon="person-outline"
+                    placeholder={'email'}
+                    keyboardType="email-address"
+                    onChangeText={(txt) => {
+                        setEmailError('')
+                        setEmail(txt)
+                    }}
+                    editable={!login_loading}
+                    value={email}
+                    errorMessage={emailError}
+                />
+                <Input
+                    InputIcon="lock-closed-outline"
+                    placeholder={'Password'}
+                    secureTextEntry={true}
+                    onChangeText={(txt) => {
+                        setPasswordError('')
+                        setPassword(txt)
+                    }}
+                    containerStyle={{
+                        marginTop: WP(SPACING_PERCENT * 1),
+                    }}
+                    editable={!login_loading}
+                    value={password}
+                    errorMessage={passwordError}
+                />
+                <View
+                    style={{
+                        marginTop: WP(SPACING_PERCENT),
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                    }}>
+                    <Text
+                        onPress={() => {
+                            navigation.navigate("Forgot")
+                        }}
+                        style={{
+                            fontSize: WP(4),
+                            fontFamily: Fonts.Bold,
+                            color: COLOR.primary,
+                        }}>
+                        FORGOT PASSWORD?
+                    </Text>
+                </View>
+            </View>
 
-  function onLoginPress() {
-    setLoading(true)
-    setEmailError('')
-    setPasswordError('')
-    AuthServices.login(email, password).then(response => {
-      console.log('AuthServices.login-response', response)
-      preferences.setAuthSession({
-        accessToken: response.token,
-      }).then(() => {
-        props.setUser(response)
-      })
-    }).catch(error => {
-      console.log('AuthServices.login-error', error)
-      setEmailError('')
-      if (error.response.status == 401) {
-        setPasswordError('Username or password is incorrect')
-      } else {
-        setPasswordError('Something went wrong')
-      }
-    }).finally(() => {
-      setLoading(false)
-    })
+            {/* button  */}
+            <TouchableOpacity
+                disabled={login_loading}
+                onPress={() => {
+                    if (validate()) {
+                        // navigation.navigate('bottomTab');
+                        onLoginPress()
+                    }
+                }}
+                style={{
+                    // marginTop: WP(SPACING_PERCENT * 2),
+                    margin: WP(SPACING_PERCENT * 1),
+                    backgroundColor: COLOR.primary,
+                    height: WP(SPACING_PERCENT * 3),
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                {login_loading ? (
+                    <ActivityIndicator animating={true} color={'white'} size="small" />
+                ) : (
+                    <Text
+                        style={{
+                            fontSize: WP(4),
+                            fontFamily: Fonts.Bold,
+                            color: 'white',
+                        }}>
+                        Sign In
+                    </Text>
+                )}
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('SignUp');
+                }}
+                style={{
+                    margin: WP(SPACING_PERCENT * 1),
+                    // marginTop: WP(SPACING_PERCENT * 1),
+                    color: COLOR.primary,
+                    height: WP(SPACING_PERCENT * 3),
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    borderWidth: 0.7,
+                    borderColor: 'blue',
+                    justifyContent: 'center',
+                }}>
+                <Text
+                    style={{
+                        color: 'blue',
+                        fontSize: WP(4),
+                        fontFamily: Fonts.Bold,
+                    }}>
+                    Register
+                </Text>
+            </TouchableOpacity>
+        </ScrollView>
+    );
+};
 
-  }
-
-  return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-      }}
-    >
-      <View style={{
+const styles = StyleSheet.create({
+    container: {
         flex: 1,
-        marginVertical: 50,
-        marginHorizontal: 25,
-        justifyContent: 'center'
-      }}>
-        <View style={{
-          alignItems: 'center'
-        }}>
-          <Text style={{
-            fontSize: 20,
-            fontFamily: Fonts.Bold,
-            color: theme.text
-          }}>Log In</Text>
-          <Text style={{
-            fontSize: 16,
-            marginTop: 5,
-            fontFamily: Fonts.Regular,
-            color: theme.text
-          }}>Let's get to work</Text>
-        </View>
-        <Input
-          placeholder={'Username'}
-          keyboardType="email-address"
-          onChangeText={setEmail}
-          containerStyle={{
-            marginTop: 30
-          }}
-          editable={!loading}
-          value={email}
-          errorMessage={emailError}
-        />
+        backgroundColor: 'white',
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        padding: WP(SPACING_PERCENT),
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+    headerText: {
+        width: '100%',
+        textAlign: 'center',
+        fontSize: WP(SPACING_PERCENT),
+        color: COLOR.primary,
+        marginLeft: WP(-7),
+        fontWeight: 'bold',
+    },
+});
 
-        <Input
-          placeholder={'Password'}
-          secureTextEntry={true}
-          onChangeText={setPassword}
-          containerStyle={{
-            marginTop: 20
-          }}
-          editable={!loading}
-          value={password}
-          errorMessage={passwordError}
-        />
-        <View style={{
-          marginTop: 20,
-          flexDirection: 'row',
-          justifyContent: 'flex-end'
-        }}>
-          <Text style={{
-            fontSize: 13,
-            fontFamily: Fonts.Bold,
-            color: theme.text
-          }}>FORGOT PASSWORD?</Text>
-        </View>
-        <TouchableOpacity
-          disabled={loading}
-          onPress={() => {
-            if (validate()) {
-              onLoginPress()
-            }
-          }}
-          style={{
-            marginTop: 25,
-            backgroundColor: '#F54B66',
-            height: 40,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          {loading ? (
-            <ActivityIndicator animating={true} color={'white'} size='small' />
-          ) : (
-              <Text style={{
-                fontSize: 16,
-                fontFamily: Fonts.Bold,
-                color: 'white'
-              }}>LOGIN</Text>
-            )}
-        </TouchableOpacity>
 
-        <View style={{
-          flexDirection: 'row',
-          marginTop: 25,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <Text style={{
-            color: '#90A1AC',
-            fontSize: 15,
-            width: 100,
-          }}>{translate('language')}:</Text>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-            <Text
-              onPress={() => {
-                setLanguage('en')
-              }}
-              style={{
-                color: language?.languageTag == 'en' ? 'white' : '#90A1AC',
-                fontSize: 15,
-                padding: 5,
-                backgroundColor: language?.languageTag == 'en' ? '#00a2fd' : undefined,
-                borderRadius: 5,
-                overflow: "hidden"
-              }}
-            >EN</Text>
-            <View style={{ backgroundColor: '#90A1AC', height: 16, width: 1, marginHorizontal: 5 }} />
-            <Text
-              onPress={() => {
-                setLanguage('es')
-              }}
-              style={{
-                color: language?.languageTag == 'es' ? 'white' : '#90A1AC',
-                fontSize: 15,
-                padding: 5,
-                backgroundColor: language?.languageTag == 'es' ? '#00a2fd' : undefined,
-                borderRadius: 5,
-                overflow: "hidden"
-              }}>ES</Text>
-          </View>
-        </View>
-      </View>
-    </KeyboardAwareScrollView >
-  );
-};
-
-const styles = StyleSheet.create({});
-
-const mapStateToProps = state => {
-  const { app } = state
-
-  return {
-    theme: app.theme,
-    language: app.language
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  {
-    setTheme,
-    setLanguage,
-    setUser
-  },
-)(Login);
+export default Login;

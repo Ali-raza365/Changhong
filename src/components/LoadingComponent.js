@@ -2,35 +2,36 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
-  View,
-  ActivityIndicator
+    View,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
+import { COLOR } from '../common/Config';
 
 const Loading = (props) => {
-    const { theme } = props
+    const { theme, containerStyle } = props
 
     return (
-        <View style={{
+        <View style={[{
             flex: 1,
-            backgroundColor: theme.background,
+            backgroundColor: "#f5f5f5",
             alignItems: 'center',
             justifyContent: 'center'
-        }}>
-            <ActivityIndicator animating={true} color={theme.text} size='large'/>
+        }, containerStyle]}>
+            <ActivityIndicator animating={true} color={COLOR.primary} size='large' />
         </View>
     )
 }
 
 const mapStateToProps = state => {
     const { app } = state
-  
+
     return {
-      theme: app.theme
+        theme: app.theme
     };
-  };
-  
-  export default connect(
+};
+
+export default connect(
     mapStateToProps,
     {},
-  )(Loading);
+)(Loading);
