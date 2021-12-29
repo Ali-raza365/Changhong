@@ -36,6 +36,8 @@ import SplashScreen from './Splash';
 import ManuallyBarCode from './ManuallyBarCode';
 import Forgot from './Forgot';
 import BarCodeSuccess from './BarCodeSuccess';
+import PdfViewer from './PdfViewer';
+import MrpProductDetails from './MrpProductDetails';
 
 export {
     WelcomeScreen,
@@ -72,5 +74,7 @@ export {
     SplashScreen,
     ManuallyBarCode,
     Forgot,
-    BarCodeSuccess
+    BarCodeSuccess,
+    PdfViewer,
+    MrpProductDetails
 };

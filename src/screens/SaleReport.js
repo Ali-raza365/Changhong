@@ -26,81 +26,113 @@ import {
     FONT_SIZES
 } from '../common/Config';
 import { _GETSale } from '../store/actions/stockaction';
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+
+
 const SaleReport = ({ navigation }) => {
     const dispatch = useDispatch()
-    const [date, setDate] = useState();
     const [data, setdata] = useState({
         sale: [],
         days: [],
         target: "7"
     });
-    const [format, setFormat] = useState(new Date());
+    const [show, setShow] = useState(false);
+    const [date, setDate] = useState(new Date());
+    const [startshow, setStartshow] = useState(false);
     const [mode, setMode] = useState('date');
+
+    const [select, setSelect] = useState("");
+    const [Endshow, setEndShow] = useState(false);
+    const [EndDate, setEndDate] = useState(new Date());
+    const [EndTime, setEndTime] = useState(new Date());
+    const [format, setFormat] = useState(new Date());
+
     const [refreshing, setRefreshing] = useState(false);
 
-    const [show, setShow] = useState(false);
     const { salereport, sale_loading, } = useSelector(state => state.stock)
     useEffect(() => {
-        var d = new Date();
-        formateDate(d)
+        // var d = new Date();
+        // formateDate(d)
         getsaleReport()
     }, [])
 
     const onRefresh = () => {
-        //Clear old data of the list
         getsaleReport()
+        setShow(false)
+        setDate(new Date())
+        setStartshow(false)
+
     };
     const formateDate = (d) => {
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var monthName = months[d.getMonth()];
-        var datestring = d.getDate() + " " + (monthName) + " " + d.getFullYear()
-        // let today = d.getDate() + " " + (monthName)
-        // console.log(today)
-        // let index = salereport.days && salereport.days.indexOf(today.toString())
-        // console.log(index)
-        setDate(datestring)
+        var datestring = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear()
+        console.log(datestring, monthName)
+        return datestring
     }
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        // console.log(currentDate)
-        setShow(Platform.OS === 'ios');
-        formateDate(currentDate)
-        setFormat(currentDate);
+        // const currentDate = selectedDate || date;
+        // // console.log(currentDate)
+        // setShow(Platform.OS === 'ios');
+        // formateDate(currentDate)
+        // setFormat(currentDate);
+        setShow(!show)
+        if (select == "start") {
+            setDate(selectedDate)
+
+            if (startshow) {
+                let _startDate = formateDate(selectedDate)
+                let _endDate = formateDate(EndDate)
+                dispatch(_GETSale({
+                    "start_date": _startDate,
+                    // "end_date": _endDate,
+                }))
+            }
+
+        } else {
+            setEndDate(selectedDate)
+            if (startshow) {
+                let _startDate = formateDate(date)
+                let _endDate = formateDate(selectedDate)
+                dispatch(_GETSale({
+                    "start_date": _startDate,
+                    // "end_date": _endDate,
+                }))
+            }
+        }
     };
 
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    };
 
-    const showDatepicker = () => {
-        showMode('date');
-    };
     const getsaleReport = () => {
         dispatch(_GETSale())
     }
     useEffect(() => {
         if (salereport.length !== 0) {
-            let days = salereport.length !== 0 ? salereport.days.split(',') : []
-            let sale = salereport.length !== 0 ? salereport.sale.split(',') : []
-            let target = salereport.sale_target
-            let arr = sale.map((sa, index) => {
-                let outputstr = sa.replace(/'/g, '');
-                if (sa !== "") {
-                    return +outputstr
-                } else {
-                    return 0
-                }
-            })
-            setdata({
-                days,
-                sale: arr,
-                target
-            })
-            console.log({ arr, days, target, })
+            formateData()
         }
     }, [salereport])
+
+    const formateData = () => {
+        let days = salereport.length !== 0 ? salereport.days.split(',') : []
+        let sale = salereport.length !== 0 ? salereport.sale.split(',') : []
+        let target = salereport.sale_target
+        let arr = sale.map((sa, index) => {
+            let outputstr = sa.replace(/'/g, '');
+            if (sa !== "") {
+                return +outputstr
+            } else {
+                return 0
+            }
+        })
+        setdata({
+            days,
+            sale: arr,
+            target
+        })
+        console.log({ arr, days, target, })
+    }
 
     if (sale_loading) {
         return <LoadingComponent />
@@ -122,14 +154,50 @@ const SaleReport = ({ navigation }) => {
                 iconStyle={{ color: COLOR.whiteColor }}
                 titleStyle={{ color: COLOR.whiteColor }}
                 title="Sales Report" />
-            <View style={{ backgroundColor: COLOR.primary, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                <TouchableOpacity style={styles.btnContainer}
-                    onPress={() => {
-                        // showDatepicker()
-                    }}
-                >
-                    <Text style={styles.btn}>{date}</Text>
-                </TouchableOpacity>
+
+            <View style={[styles.dateTimeContainer]} >
+                <View style={styles.dateContainer}>
+                    <Text style={styles.DescriptionsText}>Select Start Date</Text>
+                    <TouchableOpacity style={[styles.dateTimeInput,]}
+                        onPress={() => {
+                            setShow(true)
+                            setSelect("start")
+                            setStartshow(true)
+                        }}
+                    >
+                        <Text style={styles.inputText}>{!startshow ? 'Choose date' : date.toLocaleDateString()}</Text>
+                        <MCIcon
+                            onPress={() => {
+                                setShow(true)
+                                setSelect("start")
+                                setStartshow(true)
+                            }}
+                            name="calendar-month-outline"
+                            size={WP(TAB_ICON_SIZE)}
+                            color={COLOR.primary} />
+                    </TouchableOpacity>
+                </View>
+                {/* <View style={styles.dateContainer}>
+                    <Text style={styles.DescriptionsText}>Select End Date</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setShow(true),
+                                setSelect("end")
+                            setEndShow(true)
+                        }}
+                        style={[styles.dateTimeInput,]}>
+                        <Text style={styles.inputText}>{!Endshow ? 'Choose date' : EndDate.toLocaleDateString()}</Text>
+                        <MCIcon
+                            onPress={() => {
+                                setShow(true),
+                                    setSelect("end")
+                                setEndShow(true)
+                            }}
+                            name="calendar-month-outline"
+                            size={WP(TAB_ICON_SIZE)}
+                            color={COLOR.primary} />
+                    </TouchableOpacity>
+                </View> */}
             </View>
 
             <View style={styles.chartContainer}>
@@ -137,8 +205,10 @@ const SaleReport = ({ navigation }) => {
 
                 <View style={styles.ChartColorContainer}>
                     <View style={styles.colorScale}>
-                        <Text style={styles.Textt}>Sale  </Text>
+                        <Text style={styles.Textt}> Sale </Text>
                         <View style={{ width: WP(5), height: WP(5), backgroundColor: "#6b90a8" }} />
+                        {/* <Text style={styles.Textt}>  {salereport && salereport.total_sale && salereport.total_sale}</Text> */}
+
                     </View>
                     <View style={styles.colorScale}>
                         <Text style={styles.Textt}>Target Sale  </Text>
@@ -149,22 +219,33 @@ const SaleReport = ({ navigation }) => {
 
 
                 <VictoryChart
-                    theme={VictoryTheme.material}
-                // domainPadding={10}
+                    // theme={VictoryTheme.material}
+                    domainPadding={{ x: 50, y: [0, 20] }}
                 >
                     <VictoryBar
-                        alignment="start"
-                        style={{ data: { fill: "#c43a31" } }}
+                        alignment="middle"
+                        style={{
+                            data: {
+                                fill: "#6b90a8",
+                                stroke: "#6b90a8",
+                                fillOpacity: 0.7,
+                                strokeWidth: 3
+                            },
+                            labels: {
+                                fontSize: 6,
+                                fill: "#6b90a8",
+                            }
+                        }}
+
                         data={
                             data.sale.length !== 0 ? data.sale.map((sa, index) => {
-                                return { x: index + 1, y: sa }
+                                return { x: data.days.length == 0 ? index + 1 : data.days[index], y: sa }
                             }) :
-                                [{ y: 2 },
-                                { y: 3 },
-                                { y: 5 },
-                                { y: 1 },
-                                { y: 4 },
-                                { y: 5 },]
+                                [{ y: 0 },
+                                { y: 0 },
+                                { y: 0 },
+                                { y: 0 },
+                                ]
                         }
                     />
                 </VictoryChart>
@@ -227,6 +308,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: WP(2),
         marginBottom: WP(2),
+        borderColor: 1,
     }, btn: {
         textTransform: "uppercase",
         textAlign: "center",
@@ -264,7 +346,37 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: WP('4')
 
-    }
+    },
+    dateContainer: {
+        width: '50%',
+        padding: WP(SPACING_PERCENT),
+    },
+    dateTimeContainer: {
+        width: '100%',
+        // backgroundColor: COLOR.Blue2,
+        flexDirection: 'row',
+        justifyContent: "center"
+        // padding: WP(SPACING_PERCENT / 2)
+    },
+    dateTimeInput: {
+        marginTop: 10,
+        width: '100%',
+        backgroundColor: COLOR.offWhite,
+        flexDirection: 'row',
+        padding: WP(SPACING_PERCENT / 1.5),
+        paddingVertical: WP(SPACING_PERCENT / 2),
+        alignItems: 'center',
+        // height: WP(35),
+        justifyContent: 'space-between',
+        borderRadius: WP(RADIUS),
+        borderColor: COLOR.primary,
+        borderWidth: 0.7,
+    },
+    DescriptionsText: {
+        color: COLOR.primary,
+        paddingHorizontal: WP(SPACING_PERCENT),
+        fontSize: WP(TEXT_SIZES.info_1)
+    },
 })
 export default SaleReport;
 

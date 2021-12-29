@@ -47,10 +47,12 @@ const PersonalDetails = ({ navigation, route }) => {
     const [username, setUsername] = useState("")
     const [cnic, setCnic] = useState('')
     const [card, setCard] = useState('')
+    const [iban, setIban] = useState('')
 
     const [usernameError, setUsernameError] = useState('')
     const [cnicError, setCnicError] = useState('')
     const [cardError, setCardError] = useState('')
+    const [ibanError, setIbanError] = useState('')
 
 
     const [open, setOpen] = useState(false);
@@ -104,6 +106,10 @@ const PersonalDetails = ({ navigation, route }) => {
             setCardError('Please enter account number');
             return false;
         }
+        if (iban.length == 0) {
+            setIbanError('Please enter IBAN number');
+            return false;
+        }
         if (!value) {
             alert('Please select Bank');
             return false;
@@ -118,7 +124,8 @@ const PersonalDetails = ({ navigation, route }) => {
             account_name: username,
             account_number: card,
             payment_type: value,
-            cnic_number: cnic
+            cnic_number: cnic,
+            iban_no: iban,
         }
         console.log(details)
         dispatch(_Withdraw(details, navigation))
@@ -175,7 +182,7 @@ const PersonalDetails = ({ navigation, route }) => {
                 <Input
                     containerStyle={{ marginVertical: WP(3) }}
                     InputIcon="card-outline"
-                    placeholder={'Enter Account No (Optional)'}
+                    placeholder={'Enter Account No'}
                     keyboardType="numeric"
                     onChangeText={(txt) => {
                         setCardError("")
@@ -184,6 +191,19 @@ const PersonalDetails = ({ navigation, route }) => {
                     editable={!wallet_Loading}
                     value={card}
                     errorMessage={cardError}
+                />
+                <Input
+                    containerStyle={{ marginVertical: WP(3) }}
+                    InputIcon="globe-outline"
+                    placeholder={'Enter IBAN NO'}
+                    keyboardType="email-address"
+                    onChangeText={(txt) => {
+                        setIbanError("")
+                        setIban(txt)
+                    }}
+                    editable={!wallet_Loading}
+                    value={iban}
+                    errorMessage={ibanError}
                 />
                 <DropDownPicker
                     open={open}

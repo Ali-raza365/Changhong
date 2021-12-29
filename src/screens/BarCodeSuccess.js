@@ -63,10 +63,8 @@ const BarCodeSuccess = ({ navigation, route }) => {
     const onClickCamera = () => {
         const options = {
             mediaType: 'photo',
-            quality: 0.5,
+            quality: 1,
             // includeBase64: true,
-            maxWidth: 300,
-            maxHeight: 300,
             cameraType: 'back'
         }
         launchCamera(options, response => {

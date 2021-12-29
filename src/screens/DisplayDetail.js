@@ -102,8 +102,6 @@ const DisplayDetail = (props) => {
         })
         setselectArry(arr)
     }
-
-
     useEffect(() => {
         if (displays.length !== 0) {
             let arr = displays.map((it) => { return { ...it, qty: 0 } })
@@ -652,6 +650,7 @@ const DisplayDetail = (props) => {
                                 );
                             }}
                             renderItem={({ item, index }) => {
+                                let name = item.subcategory.name;
                                 console.log('renderItem', item.subcategory.name)
                                 return (
                                     <View
@@ -669,11 +668,26 @@ const DisplayDetail = (props) => {
                                             alignItems: 'center',
                                         }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <IconFontAwesome
-                                                name={"tv"}
-                                                size={WP(8)}
-                                                color={COLOR.blackColor}
-                                            />
+                                            {name === 'TV' &&
+                                                <IconFontAwesome
+                                                    name={"tv"}
+                                                    size={WP(10)}
+                                                    color={COLOR.red}
+                                                />}
+                                            {name === 'AC' &&
+                                                <Image
+                                                    resizeMode="contain"
+                                                    style={{ padding: WP(6), width: 0, height: 0 }}
+
+                                                    source={IMAGE.ac}
+                                                />}
+                                            {name === 'Refrigerator' &&
+                                                <Image
+                                                    resizeMode="contain"
+                                                    style={{ padding: WP(6), width: 0, height: 0 }}
+
+                                                    source={IMAGE.fridge}
+                                                />}
                                             <View style={{ paddingHorizontal: WP(3) }}>
                                                 <Text
                                                     style={{
@@ -683,12 +697,12 @@ const DisplayDetail = (props) => {
                                                         fontWeight: 'bold',
                                                         marginTop: WP(3),
                                                     }}>
-                                                    {item.name}
+                                                    {item.model_number}
                                                 </Text>
-                                                {/* <Text
-                                                            style={{ lineHeight: WP(SPACING_PERCENT), fontSize: WP(3) }}>
-                                                            32 "" 42"
-                                                       </Text> */}
+                                                <Text
+                                                    style={{ lineHeight: WP(SPACING_PERCENT), fontSize: WP(3) }}>
+                                                    {item.stock ? item.stock + ' Models' : '0 Models'}
+                                                </Text>
                                             </View>
                                         </View>
                                         {/* {item.productName == '3D Logo' && <View style={styles.dot} />} */}

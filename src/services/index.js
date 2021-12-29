@@ -10,12 +10,13 @@ import axios from 'axios';
 export const _LOGIN_API = (email, password,) =>
     new Promise(async (resolve, reject) => {
         try {
-            // const requestBody = new FormData()
-            // requestBody.append('email', email)
-            // requestBody.append('password', password)
+            const requestBody = new FormData()
+            requestBody.append('email', email)
+            requestBody.append('password', password)
             // console.log("_LOGIN_API ", axios, { email, password })
-            // let details = { email, password }
-            const response = await Axios.post('/login', { email, password });
+            let details = { email, password }
+            console.log(email, password)
+            const response = await Axios.post('/login', requestBody);
             const { data } = response;
             console.log('login', 'response', data);
             setTimeout(() => {
@@ -24,9 +25,9 @@ export const _LOGIN_API = (email, password,) =>
                 });
             }, 3000)
         } catch (error) {
-            console.log('login', 'error', error);
+            console.log('login', 'error', { error });
             console.log('login', 'error.response.message', error.message);
-            // console.log('login', 'error.response', error.response);
+            console.log('login', 'error.response', error.response);
             reject(error);
         }
     });
@@ -431,10 +432,11 @@ export const _StockOrderApi = (details) =>
     });
 
 
-export const _GetSaleReportApi = () =>
+export const _GetSaleReportApi = (body) =>
     new Promise(async (resolve, reject) => {
         try {
-            const response = await Axios.post('/sale-report');
+            console.log({ body })
+            const response = await Axios.post('/sale-report', body);
             const { data } = response;
             console.log('_GetSaleReportApi', 'response', data);
             setTimeout(() => {

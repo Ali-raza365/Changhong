@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
 import Preferences from '../common/preferences';
 
-export const BASE_URL = 'https://changhong.arspsoft.com';
+export const BASE_URL = 'https://selloutapp.chiq.com.pk';
 const instance = Axios.create({
     baseURL: BASE_URL + '/api',
     timeout: 30000,

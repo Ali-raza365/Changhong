@@ -78,14 +78,14 @@ const Login = (props) => {
             {/* headers */}
             <HeaderComponent NoIcon={true} title="Sign In" navigation={navigation} />
             {/* Logo  */}
-            <View style={{ overflow: 'hidden', width: "90%", marginLeft: "auto", marginRight: "auto" }}>
-                <Image source={IMAGE.Chiq_logo} style={{ width: "100%", height: HP(13) }} resizeMode="center" />
+            <View style={{ overflow: 'hidden', width: "100%", marginLeft: "auto", marginRight: "auto" }}>
+                <Image source={IMAGE.new_Chiq_logo} style={{ width: "100%", height: HP(20) }} resizeMode="center" />
             </View>
             {/* Welcome Text  */}
             <View style={{ margin: WP(SPACING_PERCENT) }}>
                 <Text style={{ fontSize: WP(7), fontWeight: 'bold' }}>Welcome</Text>
                 <Text style={{ fontSize: WP(5), color: '#969696' }}>
-                    Enter your phone number and email {'\n'}address to sign in...
+                    Enter your  email address to sign in...
                 </Text>
             </View>
             {/* inputs contaner */}

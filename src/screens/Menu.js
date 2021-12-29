@@ -308,23 +308,8 @@ const Home = (props) => {
                 ListHeaderComponent={() => {
                     return (
                         <>
-                            <View
-                                style={{
-                                    // overflow: 'hidden',
-                                    // marginTop: WP(2),
-                                    // position: 'absolute',
-                                    // zIndex: 9999999999,
-                                    // marginBottom: HP(20),
-                                    // width: '97%',
-                                    // backgroundColor: 'red',
-                                    // marginLeft: 'auto',
-                                    // marginRight: 'auto',
-                                }}>
-                                <Image
-                                    source={IMAGE.earth}
-                                // style={{ width: '100%', height: HP(20) }}
-                                // resizeMode="contain"
-                                />
+                            <View style={{ width: "100%", }}>
+                                <Image source={IMAGE.Chiq_logo} style={{ height: HP(30) }} resizeMode="contain" />
                             </View>
                         </>
                     );

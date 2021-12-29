@@ -62,7 +62,7 @@ const TransactionHistory = (props) => {
                 containerStyle={{ backgroundColor: COLOR.primary }}
                 iconStyle={{ color: COLOR.whiteColor }}
                 titleStyle={{ color: COLOR.whiteColor }}
-                title="transaction history"
+                title="Transaction History"
             />
             <FlatList
                 refreshControl={

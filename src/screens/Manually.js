@@ -73,7 +73,9 @@ const Manually = (props) => {
 
     const onClickCamera = () => {
         const options = {
-            noData: true,
+            mediaType: 'photo',
+            quality: 1,
+            cameraType: 'back'
         };
         launchCamera(options, (response) => {
             console.log(response);
@@ -159,7 +161,7 @@ const Manually = (props) => {
         if (barcode_details) {
             console.log("barcode_details", barcode_details.length, barcode_details)
             // let prc = calculatePrcetage(barcode_details.product_price, barcode_details.incentive)
-            setdata({ ...data, ...barcode_details });
+            setdata({ ...data, ...barcode_details, });
         }
     }, [barcode_details]);
 

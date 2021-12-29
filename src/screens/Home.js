@@ -87,8 +87,8 @@ const Home = (props) => {
                                 {/* <View style={{ overflow: 'hidden', width: "85%", marginLeft: "auto", marginRight: "auto" }}>
                                     <Image source={IMAGE.logo} style={{ width: "100%", height: HP(13) }} resizeMode="contain" />
                                 </View> */}
-                                <View style={{ overflow: 'hidden', }}>
-                                    <Image source={IMAGE.earth} style={{}} />
+                                <View style={{ width: "100%" }}>
+                                    <Image source={IMAGE.Chiq_logo} style={{ width: "100%", height: HP(30) }} resizeMode="cover" />
                                 </View>
                                 {/* <Text
                                     // onPress={() => {
@@ -120,7 +120,7 @@ const Home = (props) => {
                                     }}>
                                     Step # 1 Scan QR code. {"\n"}
 
-                                    Step # take & upload a picture
+                                    Step # 2 take & upload a picture
                                 </Text>
                                 <Text
                                     style={{

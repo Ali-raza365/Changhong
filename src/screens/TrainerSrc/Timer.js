@@ -101,10 +101,10 @@ const Timer = ({ navigation, route }) => {
     const onClickCamera = () => {
         const options = {
             mediaType: 'photo',
-            quality: 0.5,
+            // quality: 0.5,
             // includeBase64: true,
-            maxWidth: 300,
-            maxHeight: 300,
+            // maxWidth: 300,
+            // maxHeight: 300,
             cameraType: 'back'
         }
         try {
@@ -173,7 +173,7 @@ const Timer = ({ navigation, route }) => {
     return (
         <View style={styles.Container}>
             <HeaderComponent
-                title="IT Training"
+                title="Training"
                 navigation={navigation}
                 containerStyle={{
                     backgroundColor: COLOR.primary,

@@ -53,7 +53,7 @@ const Wallet = ({ navigation }) => {
     }, [])
 
     function Check() {
-        // console.log({ amount, balance })
+        console.log({ amount, balance })
         if (amount.length === 0) {
             setAmountError('Please enter amount');
             return false;
@@ -144,6 +144,7 @@ const Wallet = ({ navigation }) => {
                         onPress={() => {
                             if (Check()) {
                                 navigation.navigate("PersonalDetails", { amount })
+                                setAmount("")
                             }
                         }}
                         style={{

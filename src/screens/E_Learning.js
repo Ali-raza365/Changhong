@@ -43,6 +43,7 @@ import IconMaterial from 'react-native-vector-icons/AntDesign';
 const E_Learning = (props) => {
     const { theme, navigation } = props;
     const [active, setactive] = useState(0)
+    const [saving, setSaving] = useState(false)
     const dispatch = useDispatch()
     const [refreshing, setRefreshing] = useState(false);
 
@@ -52,7 +53,7 @@ const E_Learning = (props) => {
         setactive(ind)
     }
 
-    console.log("current =>", Courses);
+    // console.log("current =>", Courses);
 
     useEffect(() => {
         getcourses()
@@ -84,37 +85,73 @@ const E_Learning = (props) => {
         dispatch(_AddIntoFinished(id))
     }
 
-    const DownloadFile = async (url, id) => {
-        onAddFinished(id)
-        Linking.openURL(url)
+    function getExtension(path) {
+        var basename = path.split(/[\\/]/).pop(),  // extract file name from full path ...
+            // (supports `\\` and `/` separators)
+            pos = basename.lastIndexOf(".");       // get last position of `.`
 
-        // let dirs =
-        //      Platform.OS == 'ios'
-        //           ? RNFetchBlob.fs.dirs.DocumentDir
-        //           : RNFetchBlob.fs.dirs.DCIMDir;
-        // console.log(dirs, 'document path');
-        // RNFetchBlob.config({
-        //      // response data will be saved to this path if it has access right.
+        if (basename === "" || pos < 1)            // if file name is empty or ...
+            return "";                             //  `.` not found (-1) or comes first (0)
 
-        //      fileCache: true,
-        //      path: dirs + "/changhong",
-        // })
-        //      .fetch(
-        //           'GET',
-        //           'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        //           {
-        //                //some headers ..
-        //           },
-        //      )
-        //      .then(res => {
-        //           // the path should be dirs.DocumentDir + 'path-to-file.anything'
-        //           console.log('The file saved to ', res.path());
-        //      })
-        //      .catch((err) => {
-        //           alert(err);
-        //           // setSaving(false);
-        //      })
+        return basename.slice(pos + 1);            // extract extension ignoring `.`
     }
+
+    // console.log( getExtension("/path/to/file.ext") );
+    // >> "ext"
+
+    const DownloadFile = async (file) => {
+        // setSaving(true);
+        // onAddFinished(file.id)
+        // Linking.openURL(url)
+        // _saveInvoicePDF(url)
+        console.log({ fileURL: file })
+        // if (getExtension(file.file) === 'pdf') {
+        //     return console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwww", getExtension(file.file))
+        // }
+        navigation.navigate("PdfViewer", { uri: file })
+        // try {
+        //     let dirs =
+        //         Platform.OS == 'ios'
+        //             ? RNFetchBlob.fs.dirs.DocumentDir
+        //             : RNFetchBlob.fs.dirs.DCIMDir;
+        //     // console.log(dirs, 'document path', `${dirs}/${file.title}.pdf`);
+        //     RNFetchBlob.config({
+        //         // response data will be saved to this path if it has access right.
+        //         fileCache: true,
+        //         path: `${dirs}/${file.title}.pdf`,
+        //     })
+        //         .fetch(
+        //             'GET',
+        //             file.file,
+        //             {
+        //                 //some headers ..
+        //             },
+        //         )
+        //         .then(res => {
+        //             let status = res.respInfo.status
+        //             if (status !== 404) {
+        //                 setSaving(false);
+        //                 navigation.navigate("PdfViewer", { uri: file })
+        //             } else {
+        //                 alert("pdf link not found or invalid",)
+        //             }
+        //             console.log({ filename: file.title, downloadRes: res }, "dddddddddddddddddddddddddddddddddddd")
+        //             // the path should be dirs.DocumentDir + 'path-to-file.anything'
+        //             // console.log('The file saved to ', res.path());
+        //             setSaving(false);
+        //         })
+        //         .catch((err) => {
+        //             alert(err);
+        //             setSaving(false);
+        //         }).finally(() => {
+        //             setSaving(false);
+        //         })
+        // } catch (error) {
+        //     setSaving(false);
+        // }
+
+    }
+
 
     // useEffect(() => {
     //      if (active == 2) {
@@ -123,7 +160,7 @@ const E_Learning = (props) => {
     // }, [active])
 
 
-    if (Courses.length == 0 && course_loading) {
+    if (Courses.length == 0 && course_loading || saving) {
         return <LoadingComponent />
     }
 
@@ -149,19 +186,23 @@ const E_Learning = (props) => {
                             <FlatList
                                 refreshControl={
                                     <RefreshControl
-                                        //refresh control used for the Pull to Refresh
                                         refreshing={refreshing}
                                         onRefresh={onRefresh}
                                     />
                                 }
                                 data={Courses ? Courses.map((item) => {
-                                    let favidarray = FavCourses.map((fav) => { return fav.elearning_id.toString() })
+                                    let favidarray = FavCourses.map((fav) => {
+                                        if (fav.elearning_id) {
+                                            return fav.elearning_id.toString()
+                                        } else {
+                                            return fav.id
+                                        }
+                                    })
                                     let flag = false
                                     if (favidarray.includes(item.id.toString())) {
 
                                         flag = true
                                     }
-                                    console.log({ favidarray, flag, id: item.id })
                                     return {
                                         ...item,
                                         heart: flag ? true : false
@@ -220,9 +261,17 @@ const E_Learning = (props) => {
                                     );
                                 }}
                                 renderItem={({ item, index }) => {
+                                    console.log(item, "current")
                                     return (
                                         <TouchableOpacity
-                                            onPress={() => { DownloadFile(item.file, item.id) }}
+                                            onPress={async () => {
+                                                await onAddFinished(item.id)
+                                                if (item.file) {
+                                                    DownloadFile(item)
+                                                } else {
+                                                    alert("pdf link not found or invalid",)
+                                                }
+                                            }}
                                             accessible={true}
                                             style={{
                                                 margin: WP(2.5),
@@ -255,7 +304,7 @@ const E_Learning = (props) => {
                                                 </Text>
                                                 <Text
                                                     style={{ lineHeight: WP(SPACING_PERCENT), marginTop: WP(2) }}>
-                                                    Validity Time:{new Date(item.created_at).toLocaleDateString()}
+                                                    Validity Time: {new Date(item.created_at).toLocaleDateString()}
                                                 </Text>
                                             </View>
                                             <IconMaterial
@@ -281,13 +330,18 @@ const E_Learning = (props) => {
                                     />
                                 }
                                 data={FinishedCourses ? FinishedCourses.map((item) => {
-                                    let favidarray = FavCourses.map((fav) => { return fav.elearning_id.toString() })
+                                    let favidarray = FavCourses.map((fav) => {
+                                        if (fav.elearning_id) {
+                                            return fav.elearning_id.toString()
+                                        } else {
+                                            return fav.id
+                                        }
+                                    })
                                     let flag = false
                                     if (favidarray.includes(item.id.toString())) {
-
                                         flag = true
                                     }
-                                    console.log({ favidarray, flag, id: item.id })
+                                    // console.log({ favidarray, flag, id: item.id })
                                     return {
                                         ...item,
                                         heart: flag ? true : false
@@ -348,6 +402,14 @@ const E_Learning = (props) => {
                                     { console.log(item) }
                                     return (
                                         <TouchableOpacity
+                                            onPress={() => {
+
+                                                if (item.elearning) {
+                                                    DownloadFile(item.elearning)
+                                                } else {
+                                                    alert("pdf link not found or invalid",)
+                                                }
+                                            }}
                                             accessible={true}
                                             style={{
                                                 margin: WP(2.5),
@@ -376,11 +438,11 @@ const E_Learning = (props) => {
                                                         fontWeight: 'bold',
 
                                                     }}>
-                                                    {item.elearning.title}
+                                                    {item && item.elearning && item.elearning.title && item.elearning.title}
                                                 </Text>
                                                 <Text
                                                     style={{ lineHeight: WP(SPACING_PERCENT), marginTop: WP(2) }}>
-                                                    Validity Time:{new Date(item.created_at).toLocaleDateString()}
+                                                    Validity Time: {new Date(item.created_at).toLocaleDateString()}
                                                 </Text>
                                             </View>
                                             {/* <IconMaterial
@@ -458,9 +520,16 @@ const E_Learning = (props) => {
                                     );
                                 }}
                                 renderItem={({ item, index }) => {
-                                    { console.log(item) }
+                                    { console.log(item, "favorite") }
                                     return (
                                         <TouchableOpacity
+                                            onPress={() => {
+                                                if (item.elearning) {
+                                                    DownloadFile(item.elearning)
+                                                } else {
+                                                    alert("pdf link not found or invalid",)
+                                                }
+                                            }}
                                             accessible={true}
                                             style={{
                                                 margin: WP(2.5),
@@ -499,7 +568,11 @@ const E_Learning = (props) => {
                                             <IconMaterial
                                                 name="heart"
                                                 onPress={() => {
-                                                    onhertClick(item.elearning_id)
+                                                    if (item.elearning_id) {
+                                                        onhertClick(item.elearning_id)
+                                                    } else {
+                                                        onhertClick(item.id)
+                                                    }
                                                 }}
                                                 size={WP(8)}
                                                 // style={{ paddingLeft: WP(2) }}

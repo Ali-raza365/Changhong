@@ -85,9 +85,40 @@ const MRP = (props) => {
             MRPList.map((it) => {
                 console.log(it.slug);
                 if (it.slug == 'changhong-ruba') {
+                    if (it.subs.length !== 0) {
+                        it.subs.sort(function (a, b) {
+                            var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+                            var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+
+                            // names must be equal
+                            return 0;
+                        });
+                    }
+
                     chang = [...it.subs];
                 }
                 if (it.slug == 'chiq') {
+                    if (it.subs.length !== 0) {
+                        it.subs.sort(function (a, b) {
+                            var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+                            var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+
+                            // names must be equal
+                            return 0;
+                        });
+                    }
                     arrchiq = [...it.subs];
                 }
             });
@@ -236,7 +267,7 @@ const MRP = (props) => {
                                 <Icon
                                     name="chevron-forward-outline"
                                     onPress={() => {
-                                        navigation.navigate('MRPDetail', { ids: { category_id: item.category_id, subcategory_id: "53" }, name: item.name });
+                                        navigation.navigate('MRPDetail', { ids: { category_id: item.category_id, subcategory_id: item.id }, name: item.name });
                                     }}
                                     size={WP(8)}
                                     style={{ position: 'absolute', right: WP(2) }}

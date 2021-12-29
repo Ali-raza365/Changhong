@@ -153,7 +153,7 @@ const MRPDetail = (props) => {
                     return (
                         <TouchableOpacity
                             onPress={() => {
-                                // navigation.navigate("Display")
+                                navigation.navigate("MrpProductDetails", { product: item })
                             }}
                             accessible={true}
                             style={{
@@ -177,7 +177,6 @@ const MRPDetail = (props) => {
                                 <Image
                                     resizeMode="contain"
                                     style={{ padding: WP(6), width: 0, height: 0 }}
-
                                     source={IMAGE.ac}
                                 />}
                             {name === 'Refrigerator' &&
@@ -187,7 +186,7 @@ const MRPDetail = (props) => {
 
                                     source={IMAGE.fridge}
                                 />}
-                            <View style={{ paddingHorizontal: WP(3) }}>
+                            <View style={{ paddingHorizontal: WP(3), flexDirection: "column" }}>
                                 <Text
                                     style={{
                                         lineHeight: WP(SPACING_PERCENT),
@@ -196,6 +195,16 @@ const MRPDetail = (props) => {
                                         fontWeight: 'bold',
                                     }}>
                                     {item.name}
+                                </Text>
+                                <Text
+                                    style={{
+                                        // lineHeight: WP(SPACING_PERCENT),
+                                        paddingTop: WP(2),
+                                        fontSize: WP(3.3),
+                                        color: COLOR.primary,
+                                        fontWeight: 'bold',
+                                    }}>
+                                    Model No: {item.model_number}
                                 </Text>
                             </View>
                             <View

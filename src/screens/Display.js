@@ -102,6 +102,7 @@ const Display = (props) => {
                     onLogout()
                 }} />
             <HeaderComponent navigation={navigation}
+                NoIcon
                 titleStyle={{ color: COLOR.whiteColor }}
                 iconStyle={{ color: COLOR.whiteColor }}
                 containerStyle={{ backgroundColor: COLOR.primary }} title="Display" />

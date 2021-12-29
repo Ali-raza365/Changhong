@@ -45,14 +45,17 @@ import {
     QrCamera,
     Forgot,
     BarCodeSuccess,
+    PdfViewer,
+    MrpProductDetails,
 } from '../screens';
 
 const Stack = createStackNavigator();
 enableScreens();
-
 const RootNavigator = (props) => {
     const { theme, user, setLanguage } = props;
     const [loading, setLoading] = useState(true);
+    const [isActive, setisActive] = useState(true)
+
 
     // async function onMount() {
     //      PermissionsManager.chechPermissionStatus();
@@ -86,7 +89,7 @@ const RootNavigator = (props) => {
     // }
 
     // useEffect(() => {
-    //      // onMount()
+
     // }, [])
     return (
         <NavigationContainer>
@@ -104,6 +107,7 @@ const RootNavigator = (props) => {
                 <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
                 <Stack.Screen name="TransactionHistory" component={TransactionHistory} />
                 <Stack.Screen name="E_Learning" component={E_Learning} />
+                <Stack.Screen name="PdfViewer" component={PdfViewer} />
                 <Stack.Screen name="Question" component={Question} />
                 <Stack.Screen name="AddQuestion" component={AddQuestion} />
                 <Stack.Screen name="ShowQuestion" component={ShowQuestion} />
@@ -115,6 +119,7 @@ const RootNavigator = (props) => {
                 <Stack.Screen name="Conformation" component={Conformation} />
                 <Stack.Screen name="MRP" component={MRP} />
                 <Stack.Screen name="MRPDetail" component={MRPDetail} />
+                <Stack.Screen name="MrpProductDetails" component={MrpProductDetails} />
                 <Stack.Screen name="SelectBrand" component={SelectBrand} />
                 <Stack.Screen name="PhotoGallery" component={PhotoGallery} />
                 <Stack.Screen name="TrainerTabs" component={TrainerBottomTabs} />

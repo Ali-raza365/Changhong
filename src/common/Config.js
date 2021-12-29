@@ -91,11 +91,16 @@ export const ICON = {
     task: require('../assets/images/tasks1.png'),
 }
 export const IMAGE = {
-    map: require('../assets/images/map.png'),
-    Chiq_logo: require('../assets/images/CHiQ_Logo1.png'),
+    map: require('../assets/images/splash.jpg'),
+    // map: require('../assets/images/map.png'),
+    newlogo: require('../assets/images/splash.jpg'),
+    Chiq_logo: require('../assets/images/splash.jpg'),
+    new_Chiq_logo: require('../assets/images/new-chiq-logo.png'),
+    // Chiq_logo: require('../assets/images/CHiQ_Logo1.png'),
     ac: require('../assets/images/air-conditioner.png'),
     fridge: require('../assets/images/fridge.png'),
-    earth: require('../assets/images/earth.jpg'),
+    earth: require('../assets/images/splash.jpg'),
+    // earth: require('../assets/images/earth.jpg'),
     logo: require('../assets/images/Logo_New.png')
 
     //     splash_icon: require('../assets/images/logo.png'),

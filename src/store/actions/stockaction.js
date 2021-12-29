@@ -143,13 +143,13 @@ export const _StockOrder = (details, navigation) => {
 
 
 
-export const _GETSale = () => {
+export const _GETSale = (body) => {
     return async dispatch => {
         console.log("_GETSale Actions")
         dispatch({
             type: GET_SALE_LOADING,
         });
-        ApiServices._GetSaleReportApi()
+        ApiServices._GetSaleReportApi(body)
             .then((data) => {
                 // console.log(data, "_")
                 if (data) {
