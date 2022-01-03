@@ -64,13 +64,14 @@ const BarCodeSuccess = ({ navigation, route }) => {
         const options = {
             mediaType: 'photo',
             quality: 1,
+            maxWidth: 600,
+            maxHeight: 600,
             // includeBase64: true,
             cameraType: 'back'
         }
         launchCamera(options, response => {
             if (response.uri) {
-                console.log(barcodeData, "sssssssssssssssssssssssss")
-
+                console.log(response)
                 let image = {
                     uri: response.uri,
                     type: response.type,

@@ -58,7 +58,7 @@ export const _Login = (email, password, navigation) => {
                                 navigation.reset({
                                     index: 0,
                                     routes: [{
-                                        name: "Display"
+                                        name: "DisplayBottomTab"
                                     }]
                                 })
                             }

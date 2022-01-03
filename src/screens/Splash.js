@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Dimensions, Image } from 'react-native';
 import preferences from '../common/preferences'
 const windowWidth = Dimensions.get('screen').width;
+import database from '@react-native-firebase/database';
+// windowWidth - 20
 const windowHeight = Dimensions.get('window').height;
 import {
     COLOR,
@@ -18,14 +20,15 @@ import {
 } from '../common/Config';
 const SplashScreen = ({ navigation }) => {
 
+    const [isActive, setisActive] = useState(null)
 
 
     useEffect(() => {
+
         preferences.getAuthSession().then((session) => {
             console.log("session", session);
             if (session) {
                 let json = JSON.parse(session)
-                // console.log(json.type, "ddddddddddddddddddddddddddddddddddddddddddddddddddddd")
                 if (json.type == "1") {
                     navigation.reset({
                         index: 0,
@@ -52,7 +55,7 @@ const SplashScreen = ({ navigation }) => {
                     navigation.reset({
                         index: 0,
                         routes: [{
-                            name: "Display"
+                            name: "DisplayBottomTab"
                         }]
                     })
                 }
@@ -64,7 +67,6 @@ const SplashScreen = ({ navigation }) => {
                     }]
                 })
             }
-
         }).catch((error) => {
             console.log(error);
         })

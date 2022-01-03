@@ -135,18 +135,10 @@ export default function BottomTabs() {
         >
             <Tab.Screen
                 name="Home"
-                component={TrainerHome}
+                component={Display}
                 options={{
                     tabBarIcon: ({ focused, color }) =>
                         <Icon name="home" size={WP(TAB_ICON_SIZE)} color={color} />,
-                }}
-            />
-            <Tab.Screen
-                name="History"
-                component={TrainingHistory}
-                options={{
-                    tabBarIcon: ({ focused, color }) =>
-                        <MaterialCommunityIcons name="history" size={WP(TAB_ICON_SIZE)} color={color} />,
                 }}
             />
             <Tab.Screen
@@ -161,18 +153,7 @@ export default function BottomTabs() {
                         />
                 }}
             />
-            {/* <Tab.Screen
-                name="Display"
-                component={Display}
-                options={{
-                    tabBarIcon: ({ focused, color }) =>
-                        <IconFontAwesome
-                            name={"tv"}
-                            size={WP(TAB_ICON_SIZE)}
-                            color={color}
-                        />
-                }}
-            /> */}
+
         </Tab.Navigator>
     );
 }

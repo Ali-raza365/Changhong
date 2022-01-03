@@ -16,6 +16,7 @@ import AuthStack from './AuthStack';
 import BottomTabs from './bottomTabs';
 import DealerBottomTab from './DealerBottombar';
 import TrainerBottomTabs from './TrainerBottomTabs';
+import DisplayBottomTabs from './DisplayBottomTabs';
 import {
     Animation,
     Display,
@@ -98,6 +99,7 @@ const RootNavigator = (props) => {
                 <Stack.Screen name="Auth" component={AuthStack} />
                 <Stack.Screen name="bottomTab" component={BottomTabs} />
                 <Stack.Screen name="DealerBottomTab" component={DealerBottomTab} />
+                <Stack.Screen name="DisplayBottomTab" component={DisplayBottomTabs} />
                 <Stack.Screen name="BrCode" component={QrCamera} />
                 <Stack.Screen name="BarCodeSuccess" component={BarCodeSuccess} />
                 <Stack.Screen name="Manually" component={Manually} />

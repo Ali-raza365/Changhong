@@ -195,16 +195,20 @@ const QRScanner = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             {qrcode ?
-                <BarcodeScanner
+                <RNCamera
                     onBarCodeRead={(q) => onSuccess(q)}
                     style={{ flex: 1 }}
                     torchMode={'off'}
                     cameraType={'back'}
-                /> : <BarcodeScanner
+                    reactivate={true}
+                    showMarker={true}
+                /> : <RNCamera
                     onBarCodeRead={(q) => onSuccess(q)}
                     style={{ flex: 1 }}
                     torchMode={'off'}
                     cameraType={'back'}
+                    reactivate={true}
+                    showMarker={true}
                 />}
 
         </View>
